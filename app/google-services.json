@@ -1,0 +1,56 @@
+{
+  "project_info": {
+    "project_number": "480303209677",
+    "firebase_url": "https://db2-medical-insurance.firebaseio.com",
+    "project_id": "db2-medical-insurance",
+    "storage_bucket": "db2-medical-insurance.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:480303209677:android:21e2cfaadbfe0a05",
+        "android_client_info": {
+          "package_name": "com.example.db2medicalinsurance"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "480303209677-0hfjgs7ijqeg2rqdmlrcdrhmejta85e9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.db2medicalinsurance",
+            "certificate_hash": "0f29dd72af35641db3f5a4612fa54b38f56c9b6e"
+          }
+        },
+        {
+          "client_id": "480303209677-qhik8onrp0ip0uprnv6tdisj097ckq5s.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.db2medicalinsurance",
+            "certificate_hash": "19d062639ae5c4fce3d4dfa3d51b81b94c44cbde"
+          }
+        },
+        {
+          "client_id": "480303209677-tqfb1o1lu67i3r8455l3tcdtp3u0o627.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA89cUtFXq0jz7bP7pa8JyDiHXFJf5Eikw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "480303209677-tqfb1o1lu67i3r8455l3tcdtp3u0o627.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
