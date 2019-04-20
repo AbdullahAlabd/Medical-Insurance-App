@@ -52,7 +52,7 @@ public class HomeActivity extends AppCompatActivity {
 
         String name = getIntent().getStringExtra("userName");
         String email = getIntent().getStringExtra("userEmail");
-        String picURL = getIntent().getStringExtra("userPicURL");
+       // String picURL = getIntent().getStringExtra("userPicURL");
         // spinner cats
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.search_categories, android.R.layout.simple_spinner_item);
@@ -60,10 +60,7 @@ public class HomeActivity extends AppCompatActivity {
         spinnerSrcCat.setAdapter(adapter);
         //spinnerSrcCat.setOnItemSelectedListener(this);
 
-        nameView.setText(name);
-        emailView.setText(email);
-        //picView.setImageBitmap(doInBackground(picURL));
-        Picasso.get().load(picURL).into(picView);
+
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -78,6 +75,10 @@ public class HomeActivity extends AppCompatActivity {
 
         FirebaseUser currentUser = mAuth.getCurrentUser();
         currentUser.getPhotoUrl();
+        nameView.setText(name);
+        emailView.setText(email);
+        //picView.setImageBitmap(doInBackground(picURL));
+        Picasso.get().load(currentUser.getPhotoUrl()).into(picView);
         logout.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 signOut();
@@ -114,7 +115,7 @@ public class HomeActivity extends AppCompatActivity {
 
         //System.err.println(picURL);
        // System.err.println(email);
-        System.err.println(picURL);
+        System.err.println(currentUser.getPhotoUrl());
         System.out.println(currentUser.getPhoneNumber());
 
     }
