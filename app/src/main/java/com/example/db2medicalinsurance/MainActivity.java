@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,8 +36,7 @@ import com.google.firebase.auth.GoogleAuthProvider;
 /**
  * Demonstrate Firebase Authentication using a Google ID Token.
  */
-public class MainActivity extends BaseActivity implements
-        View.OnClickListener {
+public class MainActivity extends BaseActivity {
 
     private static final String TAG = "GoogleActivity";
     private static final int RC_SIGN_IN = 9001;
@@ -49,6 +49,7 @@ public class MainActivity extends BaseActivity implements
     private TextView mStatusTextView;
     private TextView mDetailTextView;
     private CallbackManager mCallbackManager;
+    Button adminLogin;//
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +62,7 @@ public class MainActivity extends BaseActivity implements
         //mDetailTextView = findViewById(R.id.detail);
 
         // Button listeners
-        findViewById(R.id.signInButton).setOnClickListener(this);
+        //findViewById(R.id.signInButton).setOnClickListener(this);
         //findViewById(R.id.signOutButton).setOnClickListener(this);
         //findViewById(R.id.disconnectButton).setOnClickListener(this);
         FacebookSdk.sdkInitialize(getApplicationContext());
@@ -80,12 +81,19 @@ public class MainActivity extends BaseActivity implements
         // [END config_signin]
 
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+        //Button signInButton = findViewById(R.id.signInButton);
+        findViewById(R.id.signInButton).setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                signIn();
 
+            }
 
-        /******************************************************************************************************************************/
+        });
+
         // Initialize Facebook Login button
         mCallbackManager = CallbackManager.Factory.create();
         LoginButton loginButton = findViewById(R.id.login_button);
+
         loginButton.setReadPermissions("email", "public_profile");
         loginButton.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
             @Override
@@ -103,13 +111,20 @@ public class MainActivity extends BaseActivity implements
 
             @Override
             public void onError(FacebookException error) {
-                System.out.println("SEXXXX"+error);
+                System.out.println("a7a dah feh error bos kda!! : "+error);
 
             }
 
         });
 
         /*****************************************************************************************************************************/
+        adminLogin = findViewById(R.id.admin);
+        adminLogin.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent i = new Intent(MainActivity.this, adminLogin.class);
+                startActivity(i);
+            }
+        });
     }
 
     // [START on_start_check_user]
@@ -253,10 +268,11 @@ public class MainActivity extends BaseActivity implements
         if (user != null) {
             //mStatusTextView.setText(getString(R.string.google_status_fmt, user.getEmail()));
             //mDetailTextView.setText(getString(R.string.firebase_status_fmt, user.getUid()));
+
             Intent i = new Intent(this, HomeActivity.class);
             i.putExtra("userName", user.getDisplayName());
             i.putExtra("userEmail", user.getEmail());
-            i.putExtra("userPicURL", user.getPhotoUrl().toString());
+            //i.putExtra("userPicURL", user.getPhotoUrl().toString());
 
             startActivity(i);
 
@@ -270,7 +286,7 @@ public class MainActivity extends BaseActivity implements
             //findViewById(R.id.signOutAndDisconnect).setVisibility(View.GONE);
         }
     }
-
+/*
     @Override
     public void onClick(View v) {
         int i = v.getId();
@@ -280,6 +296,6 @@ public class MainActivity extends BaseActivity implements
             signOut();
         } else if (i == R.id.disconnectButton) {
             revokeAccess();
-        }*/
-    }
+        }
+    }*/
 }
