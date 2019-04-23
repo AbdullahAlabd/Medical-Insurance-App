@@ -34,11 +34,7 @@ import com.google.firebase.auth.GoogleAuthProvider;
 
 
 
-/**
- * Demonstrate Firebase Authentication using a Google ID Token.
- */
-public class MainActivity extends BaseActivity {
-
+public class MainActivity  extends AppCompatActivity {
 
     private static final String TAG = "GoogleActivity";
     private static final int RC_SIGN_IN = 9001;
@@ -58,19 +54,6 @@ public class MainActivity extends BaseActivity {
         setContentView(R.layout.activity_main);
         FirebaseApp.initializeApp(this);
 
-        // Views
-        //mStatusTextView = findViewById(R.id.status);
-        //mDetailTextView = findViewById(R.id.detail);
-
-        // Button listeners
-        //findViewById(R.id.signInButton).setOnClickListener(this);
-        //findViewById(R.id.signOutButton).setOnClickListener(this);
-        //findViewById(R.id.disconnectButton).setOnClickListener(this);
-        FacebookSdk.sdkInitialize(getApplicationContext());
-        AppEventsLogger.activateApp(this);
-        // [START initialize_auth]
-        // Initialize Firebase Auth
-
         mAuth = FirebaseAuth.getInstance();
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -80,16 +63,10 @@ public class MainActivity extends BaseActivity {
 
 
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-        //Button signInButton = findViewById(R.id.signInButton);
+
         findViewById(R.id.signInButton).setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 signIn();
-
-<
-        findViewById(R.id.signInButton).setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                signIn();
-
 
             }
 

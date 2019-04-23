@@ -1,6 +1,6 @@
 <resources>
     <string-array name="search_categories">
-        <item>Name</item>
+        <item>Title</item>
         <item>Type</item>
         <item>Provider</item>
         <item>Location</item>

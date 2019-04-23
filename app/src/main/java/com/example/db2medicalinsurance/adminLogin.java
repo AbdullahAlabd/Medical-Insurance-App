@@ -71,7 +71,7 @@ public class adminLogin extends AppCompatActivity implements LoaderCallbacks<Cur
     private View mProgressView;
     private View mLoginFormView;
     private FirebaseAuth mAuth;
-  
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -106,7 +106,7 @@ public class adminLogin extends AppCompatActivity implements LoaderCallbacks<Cur
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if (task.isSuccessful()) {
                                     // Sign in success, update UI with the signed-in user's information
-                                   // Log.d(TAG, "signInWithEmail:success");
+                                    // Log.d(TAG, "signInWithEmail:success");
                                     FirebaseUser user = mAuth.getCurrentUser();
                                     updateUI(user);
                                 } else {
@@ -143,7 +143,7 @@ public class adminLogin extends AppCompatActivity implements LoaderCallbacks<Cur
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             return true;
         }
-        if (checkSelfPermission(READ_CONTACTS) PackageManager.PERMISSION_GRANTED) {
+        if (checkSelfPermission(READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
             return true;
         }
         if (shouldShowRequestPermissionRationale(READ_CONTACTS)) {
@@ -393,9 +393,9 @@ public class adminLogin extends AppCompatActivity implements LoaderCallbacks<Cur
             String [] arr = email.split("@");
             System.out.println(email);
             if(arr[0].equals("admin")) {
-                 i = new Intent(this, admin.class);
+                i = new Intent(this, admin.class);
             }else {
-                 i = new Intent(this, HomeActivity.class);
+                i = new Intent(this, HomeActivity.class);
             }
             i.putExtra("userName", user.getDisplayName());
             i.putExtra("userEmail", user.getEmail());
@@ -415,4 +415,3 @@ public class adminLogin extends AppCompatActivity implements LoaderCallbacks<Cur
     }
 
 }
-
