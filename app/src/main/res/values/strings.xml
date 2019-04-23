@@ -115,4 +115,14 @@
     </string>
 
 
+    <string name="google_map_api_key">AIzaSyBg2eain61CgL1whTEWB5dl-8IFVDSlxTM</string>
+    <string name="hnt_lat">Enter Latitude</string>
+    <string name="hnt_lng">Enter Longitude</string>
+    <string name="str_btn_show">Show Location in Map</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_maps">Map</string>
+
+    <string name="duration_prompt">Choose a Duration</string>
+
+
 </resources>

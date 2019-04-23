@@ -71,7 +71,7 @@ public class adminLogin extends AppCompatActivity implements LoaderCallbacks<Cur
     private View mProgressView;
     private View mLoginFormView;
     private FirebaseAuth mAuth;
-
+  
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -143,7 +143,7 @@ public class adminLogin extends AppCompatActivity implements LoaderCallbacks<Cur
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             return true;
         }
-        if (checkSelfPermission(READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
+        if (checkSelfPermission(READ_CONTACTS) PackageManager.PERMISSION_GRANTED) {
             return true;
         }
         if (shouldShowRequestPermissionRationale(READ_CONTACTS)) {
