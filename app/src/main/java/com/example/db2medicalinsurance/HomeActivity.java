@@ -60,7 +60,7 @@ public class HomeActivity extends AppCompatActivity {
     ///algolia
 
     Client client = new Client("GUZHO6MLRL", "e3a143c6f7299a087f164ced6bb6d3a4");
-    Index index = client.getIndex("services");
+    Index index = client.getIndex("service_name");
 
     ////
     @Override
