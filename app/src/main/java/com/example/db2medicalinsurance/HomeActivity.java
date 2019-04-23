@@ -4,41 +4,65 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.Spinner;
-import android.widget.TextView;
+import android.widget.*;
 
+import com.algolia.search.saas.AlgoliaException;
+import com.algolia.search.saas.Client;
+import com.algolia.search.saas.CompletionHandler;
+import com.algolia.search.saas.Index;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.*;
+import com.google.firebase.firestore.*;
 import com.squareup.picasso.Picasso;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import static android.widget.Toast.LENGTH_LONG;
+
 
 public class HomeActivity extends AppCompatActivity {
     TextView nameView, emailView;
     Button logout, searchBtn;
     Spinner spinnerSrcCat;
+    EditText searchEditText;
     private FirebaseAuth mAuth;
     private GoogleSignInClient mGoogleSignInClient;
     private ImageView picView;
 
 
     ///firestore
-    //private FirebaseFirestore db;
-    //private CollectionReference serviceRef;
-    //private ServiceInfo service;
-    //private Query query;
+    private FirebaseFirestore db;
+    private CollectionReference serviceRef;
+    private ServiceInfo service;
+    private Query query;
     ////fire
-    //private ArrayList<ServiceInfo> services;
+    private ArrayList<ServiceInfo> services;
 
+    //// adapter's
+    private adapterServiceInfo adapterServiceInfo;
+    private RecyclerView searchResultsRecycler;
+    ////
 
+    ///algolia
 
+    Client client = new Client("GUZHO6MLRL", "e3a143c6f7299a087f164ced6bb6d3a4");
+    Index index = client.getIndex("services");
+
+    ////
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,6 +73,11 @@ public class HomeActivity extends AppCompatActivity {
         picView = findViewById(R.id.userPic);
         spinnerSrcCat = findViewById(R.id.spinnerSrcCat);
         searchBtn = findViewById(R.id.searchBtn);
+        searchEditText = findViewById(R.id.searchEditText);
+
+        searchResultsRecycler = findViewById(R.id.searchResultsRecycler);
+        searchResultsRecycler.setHasFixedSize(true);
+        searchResultsRecycler.setLayoutManager(new LinearLayoutManager(this));
 
         String name = getIntent().getStringExtra("userName");
         String email = getIntent().getStringExtra("userEmail");
@@ -59,8 +88,6 @@ public class HomeActivity extends AppCompatActivity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerSrcCat.setAdapter(adapter);
         //spinnerSrcCat.setOnItemSelectedListener(this);
-
-
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -79,6 +106,35 @@ public class HomeActivity extends AppCompatActivity {
         emailView.setText(email);
         //picView.setImageBitmap(doInBackground(picURL));
         Picasso.get().load(currentUser.getPhotoUrl()).into(picView);
+
+
+        /// load cards from firestore
+        db = FirebaseFirestore.getInstance();
+        serviceRef = db.collection("services");
+        query = serviceRef.whereGreaterThan("name", "");
+        services = new ArrayList<>();
+        query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if(task.isSuccessful()) {
+                    for(QueryDocumentSnapshot document: task.getResult()) {
+                        service = document.toObject(ServiceInfo.class);
+                        services.add(service);
+
+                        //Toast.makeText(HomeActivity.this, service.getName(), LENGTH_LONG).show();
+
+                        services.add(service);
+                        adapterServiceInfo = new adapterServiceInfo(HomeActivity.this, services);
+                        searchResultsRecycler.setAdapter(adapterServiceInfo);
+                        //serviceInfo.setDocumentId(document.getId());
+                    }
+                } else {
+                    Toast.makeText(HomeActivity.this, "Task failed", LENGTH_LONG).show();
+                }
+            }
+        });
+
+        //// finish loading cards
         logout.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 signOut();
@@ -86,37 +142,55 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
+
+        // push data to algolia: https://www.algolia.com/doc/guides/getting-started/quick-start/tutorials/quick-start-with-the-api-client/android/
+
         searchBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*db = FirebaseFirestore.getInstance();
-                serviceRef = db.collection("services");
-                query = serviceRef.whereGreaterThan("name", "");
-                services = new ArrayList<>();
-                query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+
+                /////// algolia's:
+
+                com.algolia.search.saas.Query aQuery = new com.algolia.search.saas.Query(searchEditText.getText().toString())
+                        .setAttributesToRetrieve("serviceID")
+                        .setHitsPerPage(5);
+
+                index.searchAsync(aQuery, new CompletionHandler() {
                     @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if(task.isSuccessful()) {
-                            for(QueryDocumentSnapshot document: task.getResult()) {
-                                service = document.toObject(ServiceInfo.class);
-                                services.add(service);
-                                System.out.println(service.getService_title());
+                    public void requestCompleted(JSONObject content, AlgoliaException error) {
+                        try {
+                            services.clear();
+                            JSONArray hits = content.getJSONArray("hits");
+                            List<String> list = new ArrayList<>();
+                            for (int i = 0; i < hits.length(); i++) {
+                                JSONObject jsonObject = hits.getJSONObject(i);
+                                String service_id = jsonObject.getString("serviceID");
+                                db.collection("services").document(service_id).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                    @Override
+                                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                        if(documentSnapshot.exists()) {
+                                            service = documentSnapshot.toObject(ServiceInfo.class);
+                                            services.add(service);
+                                            adapterServiceInfo = new adapterServiceInfo(HomeActivity.this, services);
+                                            searchResultsRecycler.setAdapter(adapterServiceInfo);
+                                        }
+                                    }
+                                });
 
                             }
-                        } else {
-                            Toast.makeText(HomeActivity.this, "Task failed", Toast.LENGTH_LONG).show();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
                     }
                 });
-*/
             }
         });
 
 
         //System.err.println(picURL);
        // System.err.println(email);
-        System.err.println(currentUser.getPhotoUrl());
-        System.out.println(currentUser.getPhoneNumber());
+        //System.err.println(currentUser.getPhotoUrl());
+        //System.out.println(currentUser.getPhoneNumber());
 
     }
 
