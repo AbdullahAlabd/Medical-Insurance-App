@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "480303209677-qhik8onrp0ip0uprnv6tdisj097ckq5s.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.db2medicalinsurance",
+            "certificate_hash": "19d062639ae5c4fce3d4dfa3d51b81b94c44cbde"
+          }
+        },
+        {
           "client_id": "480303209677-0hfjgs7ijqeg2rqdmlrcdrhmejta85e9.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
@@ -23,11 +31,11 @@
           }
         },
         {
-          "client_id": "480303209677-qhik8onrp0ip0uprnv6tdisj097ckq5s.apps.googleusercontent.com",
+          "client_id": "480303209677-hhmvoeabfggrv9n21k9v2fvu6p15eglv.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.example.db2medicalinsurance",
-            "certificate_hash": "19d062639ae5c4fce3d4dfa3d51b81b94c44cbde"
+            "certificate_hash": "66d14788b699faaa5b16dc832ed419fa5565a21b"
           }
         },
         {
