@@ -106,7 +106,7 @@ public class HomeActivity extends AppCompatActivity {
         /// load cards from firestore
         db = FirebaseFirestore.getInstance();
         serviceRef = db.collection("services");
-        query = serviceRef.whereGreaterThan("name", "");
+        query = serviceRef.whereGreaterThan("name", "").limit(5);
         services = new ArrayList<>();
         query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
@@ -153,11 +153,12 @@ public class HomeActivity extends AppCompatActivity {
                     com.algolia.search.saas.Query aQuery = new com.algolia.search.saas.Query(searchEditText.getText().toString())
                             .setAttributesToRetrieve("serviceID")
                             .setHitsPerPage(5);
-                    services = new ArrayList<>();
+
 
                     index.searchAsync(aQuery, new CompletionHandler() {
                         @Override
                         public void requestCompleted(JSONObject content, AlgoliaException error) {
+                            services = new ArrayList<>();
                             try {
                                 JSONArray hits = content.getJSONArray("hits");
                                 for (int i = 0; i < hits.length(); i++) {
@@ -173,6 +174,9 @@ public class HomeActivity extends AppCompatActivity {
                                         }
                                     });
                                 }
+                                if(hits.length() == 0) {
+                                    searchResultsRecycler.setAdapter(new adapterServiceInfo(HomeActivity.this, services));
+                                }
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             } catch (Exception ex) {
@@ -180,7 +184,7 @@ public class HomeActivity extends AppCompatActivity {
                             }
                         }
                     });
-                    searchResultsRecycler.setAdapter(new adapterServiceInfo(HomeActivity.this, services));
+                    //searchResultsRecycler.setAdapter(new adapterServiceInfo(HomeActivity.this, services));
 
                 } catch (Exception ex) {
                     Toast.makeText(getApplicationContext(), ex.getMessage(), Toast.LENGTH_LONG).show();
