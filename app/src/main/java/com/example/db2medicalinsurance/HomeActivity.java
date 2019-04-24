@@ -40,7 +40,7 @@ public class HomeActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private GoogleSignInClient mGoogleSignInClient;
     private ImageView picView;
-
+    private adapterServiceInfo adapterServiceInfo;
 
     ///firestore
     private FirebaseFirestore db;
@@ -134,8 +134,12 @@ public class HomeActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if(task.isSuccessful()) {
                     for(QueryDocumentSnapshot document: task.getResult()) {
-                        services.add(document.toObject(ServiceInfo.class));
-                        searchResultsRecycler.setAdapter(new adapterServiceInfo(HomeActivity.this, services));
+                        ServiceInfo serviceInfo = document.toObject(ServiceInfo.class);
+                        serviceInfo.setDocumentId(document.getId());
+                        services.add(serviceInfo);
+                        adapterServiceInfo = new adapterServiceInfo(HomeActivity.this, services);
+                        searchResultsRecycler.setAdapter(adapterServiceInfo);
+
                     }
                 } else {
                     Toast.makeText(HomeActivity.this, "Task failed", LENGTH_LONG).show();
