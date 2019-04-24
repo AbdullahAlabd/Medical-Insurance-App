@@ -28,8 +28,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 import static android.widget.Toast.LENGTH_LONG;
 
@@ -47,20 +45,18 @@ public class HomeActivity extends AppCompatActivity {
     ///firestore
     private FirebaseFirestore db;
     private CollectionReference serviceRef;
-    private ServiceInfo service;
     private Query query;
     ////fire
     private ArrayList<ServiceInfo> services;
 
     //// adapter's
-    private adapterServiceInfo adapterServiceInfo;
     private RecyclerView searchResultsRecycler;
     ////
 
     ///algolia
 
-    Client client = new Client("GUZHO6MLRL", "e3a143c6f7299a087f164ced6bb6d3a4");
-    Index index = client.getIndex("service_name");
+    private Client client;
+    private Index index;
 
     ////
     @Override
@@ -87,11 +83,10 @@ public class HomeActivity extends AppCompatActivity {
                 R.array.search_categories, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerSrcCat.setAdapter(adapter);
-        //spinnerSrcCat.setOnItemSelectedListener(this);
-
+        spinnerSrcCat.setSelection(0);
         mAuth = FirebaseAuth.getInstance();
 
-
+        client = new Client("GUZHO6MLRL", "e3a143c6f7299a087f164ced6bb6d3a4");
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken("480303209677-tqfb1o1lu67i3r8455l3tcdtp3u0o627.apps.googleusercontent.com")
                 .requestEmail()
@@ -139,15 +134,8 @@ public class HomeActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if(task.isSuccessful()) {
                     for(QueryDocumentSnapshot document: task.getResult()) {
-                        service = document.toObject(ServiceInfo.class);
-                        services.add(service);
-
-                        //Toast.makeText(HomeActivity.this, service.getName(), LENGTH_LONG).show();
-
-                        services.add(service);
-                        adapterServiceInfo = new adapterServiceInfo(HomeActivity.this, services);
-                        searchResultsRecycler.setAdapter(adapterServiceInfo);
-                        //serviceInfo.setDocumentId(document.getId());
+                        services.add(document.toObject(ServiceInfo.class));
+                        searchResultsRecycler.setAdapter(new adapterServiceInfo(HomeActivity.this, services));
                     }
                 } else {
                     Toast.makeText(HomeActivity.this, "Task failed", LENGTH_LONG).show();
@@ -169,49 +157,58 @@ public class HomeActivity extends AppCompatActivity {
         searchBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                /////// algolia's:
-
-                com.algolia.search.saas.Query aQuery = new com.algolia.search.saas.Query(searchEditText.getText().toString())
-                        .setAttributesToRetrieve("serviceID")
-                        .setHitsPerPage(5);
-
-                index.searchAsync(aQuery, new CompletionHandler() {
-                    @Override
-                    public void requestCompleted(JSONObject content, AlgoliaException error) {
-                        try {
-                            services.clear();
-                            JSONArray hits = content.getJSONArray("hits");
-                            List<String> list = new ArrayList<>();
-                            for (int i = 0; i < hits.length(); i++) {
-                                JSONObject jsonObject = hits.getJSONObject(i);
-                                String service_id = jsonObject.getString("serviceID");
-                                db.collection("services").document(service_id).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                                    @Override
-                                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                        if(documentSnapshot.exists()) {
-                                            service = documentSnapshot.toObject(ServiceInfo.class);
-                                            services.add(service);
-                                            adapterServiceInfo = new adapterServiceInfo(HomeActivity.this, services);
-                                            searchResultsRecycler.setAdapter(adapterServiceInfo);
-                                        }
-                                    }
-                                });
-
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+                try {
+                    /////// algolia's:
+                    String criteria = spinnerSrcCat.getSelectedItem().toString();
+                    if (criteria.equals("Title")) {
+                        index = client.getIndex("service_name");
+                        //Toast.makeText(getApplicationContext(), "##1"+criteria+"#", Toast.LENGTH_LONG).show();
+                    } else if (criteria.equals("Provider")) {
+                        index = client.getIndex("service_pname");
+                        //Toast.makeText(getApplicationContext(), "##2"+criteria+"#", Toast.LENGTH_LONG).show();
+                    } else {
+                        index = client.getIndex("service_name");
+                        //Toast.makeText(getApplicationContext(), "##3"+criteria+"#", Toast.LENGTH_LONG).show();
                     }
-                });
+
+                    com.algolia.search.saas.Query aQuery = new com.algolia.search.saas.Query(searchEditText.getText().toString())
+                            .setAttributesToRetrieve("serviceID")
+                            .setHitsPerPage(5);
+                    services = new ArrayList<>();
+
+                    index.searchAsync(aQuery, new CompletionHandler() {
+                        @Override
+                        public void requestCompleted(JSONObject content, AlgoliaException error) {
+                            try {
+                                JSONArray hits = content.getJSONArray("hits");
+                                for (int i = 0; i < hits.length(); i++) {
+                                    JSONObject jsonObject = hits.getJSONObject(i);
+                                    String service_id = jsonObject.getString("serviceID");
+                                    db.collection("services").document(service_id).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                        @Override
+                                        public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                            if (documentSnapshot.exists()) {
+                                                services.add(documentSnapshot.toObject(ServiceInfo.class));
+                                                searchResultsRecycler.setAdapter(new adapterServiceInfo(HomeActivity.this, services));
+                                            }
+                                        }
+                                    });
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            } catch (Exception ex) {
+                                Toast.makeText(getApplicationContext(), ex.getMessage(), Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    });
+                    searchResultsRecycler.setAdapter(new adapterServiceInfo(HomeActivity.this, services));
+
+                } catch (Exception ex) {
+                    Toast.makeText(getApplicationContext(), ex.getMessage(), Toast.LENGTH_LONG).show();
+                }
             }
+
         });
-
-
-        //System.err.println(picURL);
-       // System.err.println(email);
-        //System.err.println(currentUser.getPhotoUrl());
-        //System.out.println(currentUser.getPhoneNumber());
 
     }
 
