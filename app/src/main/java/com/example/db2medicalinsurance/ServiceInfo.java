@@ -16,7 +16,16 @@ public class ServiceInfo {
     private String provider_id;
     private String documentId;
 
-    public ServiceInfo(Date start_time, Date end_time, String provider_type, GeoPoint provider_location, String description, String name, String provider_name, String provider_id, String documentId) {
+    @Exclude
+    public String getDocumentId() {
+        return documentId;
+    }
+
+    public void setDocumentId(String documentId) {
+        this.documentId = documentId;
+    }
+
+    /*public ServiceInfo(Date start_time, Date end_time, String provider_type, GeoPoint provider_location, String description, String name, String provider_name, String provider_id, String documentId) {
         this.start_time = start_time;
         this.end_time = end_time;
         this.provider_type = provider_type;
@@ -26,7 +35,7 @@ public class ServiceInfo {
         this.provider_name = provider_name;
         this.provider_id = provider_id;
         this.documentId = documentId;
-    }
+    }*/
 
     public Date getStart_time() {
         return start_time;
@@ -60,25 +69,17 @@ public class ServiceInfo {
         this.provider_location = provider_location;
     }
 
-    @Exclude
-    public String getDocumentId() {
-        return documentId;
-    }
-
-    public void setDocumentId(String documentId) {
-        this.documentId = documentId;
-    }
 
     public ServiceInfo(){
 
     }
 
-    public ServiceInfo(String description, String name, String provider_id, String provider_name) {
+    /*public ServiceInfo(String description, String name, String provider_id, String provider_name) {
         this.description = description;
         this.name = name;
         this.provider_id = provider_id;
         this.provider_name = provider_name;
-    }
+    }*/
 
     public String getDescription() {
         return description;
