@@ -13,7 +13,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 public class admin extends AppCompatActivity {
-    Button logout, searchBtn;
+    Button logout, searchBtn,updateData,addService;
     private FirebaseAuth mAuth;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,9 +22,26 @@ public class admin extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
 
         logout = findViewById(R.id.signOutButton);
+        updateData = findViewById(R.id.hospital_update);
+        addService = findViewById(R.id.add_service);
+
         logout.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 signOut();
+
+            }
+        });
+        updateData.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent i = new Intent(admin.this,updateHospitalData.class);
+                startActivity(i);
+
+            }
+        });
+        addService.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent i = new Intent(admin.this,addNewService.class);
+                startActivity(i);
 
             }
         });

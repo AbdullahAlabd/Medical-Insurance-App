@@ -96,6 +96,27 @@ public class HomeActivity extends AppCompatActivity {
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
         FirebaseUser currentUser = mAuth.getCurrentUser();
+        String tm =  currentUser.getEmail();
+        String [] arr = tm.split("@");
+
+
+
+            if(arr[0].equals("admin")) {
+               Intent i = new Intent(this, admin.class);
+                startActivity(i);
+            }
+
+
+
+
+            //findViewById(R.id.signInButton).setVisibility(View.GONE);
+            //findViewById(R.id.signOutAndDisconnect).setVisibility(View.VISIBLE);
+
+
+
+
+
+
         currentUser.getPhotoUrl();
         nameView.setText(name);
         emailView.setText(email);
