@@ -24,7 +24,7 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_map_api_key" />
 
-        <activity android:name=".ProviderInfoActivity"></activity>
+        <activity android:name=".ProviderInfoActivity" />
         <activity android:name=".ServiceDetailActivity" />
         <activity android:name=".addNewService" />
         <activity android:name=".updateHospitalData" />
@@ -63,6 +63,7 @@
         </activity>
 
         <uses-library android:name="com.google.android.maps" />
+
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />

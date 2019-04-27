@@ -13,8 +13,19 @@ public class ProviderInfo {
     private String phone;
     private GeoPoint location;
 
+    public  ProviderInfo (){
 
-    public ProviderInfo() {}
+    }
+
+    public ProviderInfo(Map<String , String> address , String name , String type , String Owner , String phone , GeoPoint location) {
+        this.address = address;
+        this.name = name ;
+        this.type = type ;
+        this.Owner = Owner;
+        this.phone = phone ;
+        this.location = location;
+
+    }
 
     public String getOwner() {
         return Owner;

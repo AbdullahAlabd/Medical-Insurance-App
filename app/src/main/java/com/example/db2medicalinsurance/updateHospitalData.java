@@ -3,18 +3,29 @@ package com.example.db2medicalinsurance;
 import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.GeoPoint;
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public class updateHospitalData extends AppCompatActivity {
     EditText owner, name, type, phone, city, country, street;
     Button add;
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private CollectionReference serviceRef = db.collection("providers");
+
 
 
     Geocoder geocoder = null;
@@ -69,7 +80,15 @@ public class updateHospitalData extends AppCompatActivity {
                 /***************************************
                  ***************Firebase Code************
                  ****************************************/
+                Map<String, String> address = new HashMap();
+                address.put("city" , cityS);
+                address.put("country" ,countryS);
+                address.put("street" , streetS);
+                GeoPoint locationS = new GeoPoint(Double.parseDouble(latitude) , Double.parseDouble(longitude));
 
+                ProviderInfo p = new ProviderInfo(address , nameS , typeS , ownerS , phoneS , locationS);
+
+                serviceRef.add(p);
 
                 Intent i = new Intent(updateHospitalData.this, admin.class);
                 startActivity(i);

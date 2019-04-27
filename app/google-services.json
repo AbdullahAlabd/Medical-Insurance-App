@@ -8,6 +8,43 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:480303209677:android:aad9046109c73b78",
+        "android_client_info": {
+          "package_name": "com.example.amrr"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "480303209677-mhr5taeek6fajkebtt9tpmihedtvnvhb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.amrr",
+            "certificate_hash": "0f29dd72af35641db3f5a4612fa54b38f56c9b6e"
+          }
+        },
+        {
+          "client_id": "480303209677-tqfb1o1lu67i3r8455l3tcdtp3u0o627.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA89cUtFXq0jz7bP7pa8JyDiHXFJf5Eikw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "480303209677-tqfb1o1lu67i3r8455l3tcdtp3u0o627.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:480303209677:android:21e2cfaadbfe0a05",
         "android_client_info": {
           "package_name": "com.example.db2medicalinsurance"
@@ -36,6 +73,14 @@
           "android_info": {
             "package_name": "com.example.db2medicalinsurance",
             "certificate_hash": "66d14788b699faaa5b16dc832ed419fa5565a21b"
+          }
+        },
+        {
+          "client_id": "480303209677-1h0f3dpfb948h2s849fiq902tmgbl2ln.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.db2medicalinsurance",
+            "certificate_hash": "9c0c15424424ff0d70978d80969ecfee37fa4874"
           }
         },
         {

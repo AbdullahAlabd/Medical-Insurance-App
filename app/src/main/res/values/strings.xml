@@ -123,6 +123,7 @@
     <string name="title_activity_maps">Map</string>
 
     <string name="duration_prompt">Choose a Duration</string>
+    <string name="title_activity_main2">Main2Activity</string>
 
 
 </resources>

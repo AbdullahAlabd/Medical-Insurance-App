@@ -7,8 +7,17 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.Date;
+
 public class addNewService extends AppCompatActivity {
     EditText name,description,start,end;
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private CollectionReference serviceRef = db.collection("services");
+
     Button add;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +41,12 @@ public class addNewService extends AppCompatActivity {
                 /***************************************
                  ***************Firebase Code************
                  ****************************************/
+                ProviderInfo p = new ProviderInfo();
+                Date startS1 = new Date(startS);
+                Date endS1 = new Date(endS);
 
+                ServiceInfo s = new ServiceInfo(startS1 , endS1 , p.getType() , p.getLocation() , descriptionS , nameS , p.getName() );
+                serviceRef.add(s);
 
                 Intent i = new Intent(addNewService.this,admin.class);
                 startActivity(i);

@@ -11,8 +11,18 @@ public class ItemInfo {
     private Date end_time;
     public ItemInfo() {}
 
+
     public Date getStart_time() {
         return start_time;
+    }
+
+    public ItemInfo(String description, String name, Double price, Double discount, Date start_time, Date end_time) {
+        this.description = description;
+        this.name = name;
+        this.price = price;
+        this.discount = discount;
+        this.start_time = start_time;
+        this.end_time = end_time;
     }
 
     public void setStart_time(Date start_time) {
