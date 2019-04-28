@@ -3,6 +3,7 @@ package com.example.db2medicalinsurance;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -17,6 +18,7 @@ import com.algolia.search.saas.Index;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -33,7 +35,7 @@ import java.util.ArrayList;
 import static android.widget.Toast.LENGTH_LONG;
 
 
-public class HomeActivity extends AppCompatActivity {
+public class HomeActivity extends FragmentActivity implements MapDiaglog.MapDiaglogListener{
     TextView nameView, emailView;
     Button logout, searchBtn;
     Spinner spinnerSrcCat;
@@ -165,6 +167,7 @@ public class HomeActivity extends AppCompatActivity {
                     } else if (criteria.equals("Type")) {
                         index = client.getIndex("service_ptype");
                     } else if (criteria.equals("Location")) {
+                        openDialog();
                         index = client.getIndex("service_plocation");
                     } else {
                         index = client.getIndex("service_name");
@@ -239,5 +242,14 @@ public class HomeActivity extends AppCompatActivity {
         );
     }
 
+    public void openDialog() {
+        MapDiaglog mapDiaglog = new MapDiaglog();
+        mapDiaglog.show(getSupportFragmentManager(), "map diaglog");
+    }
+
+    @Override
+    public void applyTexts(Double lat, Double lon) {
+        // read the lat and lon
+    }
 }
 
