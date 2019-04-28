@@ -175,7 +175,7 @@ public class HomeActivity extends AppCompatActivity {
                         double lat = 30.1322856, lng = 31.3847951;
                         aQuery = new com.algolia.search.saas.Query()
                                 .setAroundLatLng(new AbstractQuery.LatLng(lat, lng))
-                                .setAroundRadius(5000)
+                                .setAroundRadius(46000)
                                 .setAttributesToRetrieve("serviceID")
                                 .setHitsPerPage(5);
                     } else {
