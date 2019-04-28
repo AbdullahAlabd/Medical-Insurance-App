@@ -44,7 +44,10 @@ public class HomeActivity extends FragmentActivity implements MapDiaglog.MapDiag
     private GoogleSignInClient mGoogleSignInClient;
     private ImageView picView;
     private adapterServiceInfo adapterServiceInfo;
-
+    ///dialog
+    private double lat, lon;
+    private boolean isDone;
+    private int rang;
     ///firestore
     private FirebaseFirestore db;
     private CollectionReference serviceRef;
@@ -248,8 +251,13 @@ public class HomeActivity extends FragmentActivity implements MapDiaglog.MapDiag
     }
 
     @Override
-    public void applyTexts(Double lat, Double lon) {
-        // read the lat and lon
+    public void applyTexts(double latitude, double longtitude, int Range, boolean flag) {
+        lat = latitude;
+        lon = longtitude;
+        isDone = flag;
+        rang = Range;
+        Toast.makeText(HomeActivity.this, lat + " " + lon + " " + isDone + " " + rang, Toast.LENGTH_SHORT).show();
     }
+
 }
 

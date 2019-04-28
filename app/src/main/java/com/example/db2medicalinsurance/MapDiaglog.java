@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatDialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -24,36 +25,31 @@ public class MapDiaglog extends AppCompatDialogFragment implements OnMapReadyCal
     Context mcontext;
     private Fragment fragment;
     private MapDiaglogListener listener;
-
+    private EditText rang_meter;
+    int Range;
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.layout_dialog, null);
         builder.setView(view)
                 .setTitle("Search on Map")
-                .setNeutralButton("Range in meters", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                    }
-                })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-
+                        listener.applyTexts(0, 0, 0, false);
                     }
                 })
                 .setPositiveButton("Done", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        System.out.println(lat + "  " + lon + " ");
-                        listener.applyTexts(lat, lon);
+                        Range = Integer.parseInt(rang_meter.getText().toString());
+                        listener.applyTexts(lat, lon, Range, true);
                     }
                 });
         SupportMapFragment mapFragment = (SupportMapFragment) getFragmentManager().findFragmentById(R.id.map1);
         mapFragment.getMapAsync(this);
+        rang_meter = view.findViewById(R.id.mRang);
         return builder.create();
     }
 
@@ -99,6 +95,7 @@ public class MapDiaglog extends AppCompatDialogFragment implements OnMapReadyCal
 
 
     public interface MapDiaglogListener {
-        void applyTexts(Double lat, Double lon);
+        void applyTexts(double lat, double lon, int rang, boolean isDone);
+
     }
 }
