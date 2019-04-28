@@ -170,6 +170,9 @@ public class HomeActivity extends AppCompatActivity {
                     } else if (criteria.equals("Provider")) {
                         index = client.getIndex("service_pname");
                         //Toast.makeText(getApplicationContext(), "##2"+criteria+"#", Toast.LENGTH_LONG).show();
+                    } else if (criteria.equals("Type")) {
+                        index = client.getIndex("service_ptype");
+                        //Toast.makeText(getApplicationContext(), "##2"+criteria+"#", Toast.LENGTH_LONG).show();
                     } else {
                         index = client.getIndex("service_name");
                         //Toast.makeText(getApplicationContext(), "##3"+criteria+"#", Toast.LENGTH_LONG).show();
