@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.*;
 
+import com.algolia.search.saas.AbstractQuery;
 import com.algolia.search.saas.AlgoliaException;
 import com.algolia.search.saas.Client;
 import com.algolia.search.saas.CompletionHandler;
@@ -95,26 +96,19 @@ public class HomeActivity extends AppCompatActivity {
 
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
+        // for admins:
         FirebaseUser currentUser = mAuth.getCurrentUser();
         String tm =  currentUser.getEmail();
         String [] arr = tm.split("@");
 
+        if(arr[0].equals("admin")) {
+           Intent i = new Intent(this, admin.class);
+            startActivity(i);
+        }
 
 
-            if(arr[0].equals("admin")) {
-               Intent i = new Intent(this, admin.class);
-                startActivity(i);
-            }
-
-
-
-
-            //findViewById(R.id.signInButton).setVisibility(View.GONE);
-            //findViewById(R.id.signOutAndDisconnect).setVisibility(View.VISIBLE);
-
-
-
-
+        //findViewById(R.id.signInButton).setVisibility(View.GONE);
+        //findViewById(R.id.signOutAndDisconnect).setVisibility(View.VISIBLE);
 
 
         currentUser.getPhotoUrl();
@@ -166,21 +160,29 @@ public class HomeActivity extends AppCompatActivity {
                     String criteria = spinnerSrcCat.getSelectedItem().toString();
                     if (criteria.equals("Title")) {
                         index = client.getIndex("service_name");
-                        //Toast.makeText(getApplicationContext(), "##1"+criteria+"#", Toast.LENGTH_LONG).show();
                     } else if (criteria.equals("Provider")) {
                         index = client.getIndex("service_pname");
-                        //Toast.makeText(getApplicationContext(), "##2"+criteria+"#", Toast.LENGTH_LONG).show();
                     } else if (criteria.equals("Type")) {
                         index = client.getIndex("service_ptype");
-                        //Toast.makeText(getApplicationContext(), "##2"+criteria+"#", Toast.LENGTH_LONG).show();
+                    } else if (criteria.equals("Location")) {
+                        index = client.getIndex("service_plocation");
                     } else {
                         index = client.getIndex("service_name");
-                        //Toast.makeText(getApplicationContext(), "##3"+criteria+"#", Toast.LENGTH_LONG).show();
                     }
 
-                    com.algolia.search.saas.Query aQuery = new com.algolia.search.saas.Query(searchEditText.getText().toString())
-                            .setAttributesToRetrieve("serviceID")
-                            .setHitsPerPage(5);
+                    com.algolia.search.saas.Query aQuery;
+                    if(criteria.equals("Location")) {
+                        double lat = 30.1322856, lng = 31.3847951;
+                        aQuery = new com.algolia.search.saas.Query()
+                                .setAroundLatLng(new AbstractQuery.LatLng(lat, lng))
+                                .setAroundRadius(100)
+                                .setAttributesToRetrieve("serviceID")
+                                .setHitsPerPage(5);
+                    } else {
+                        aQuery = new com.algolia.search.saas.Query(searchEditText.getText().toString())
+                                .setAttributesToRetrieve("serviceID")
+                                .setHitsPerPage(5);
+                    }
 
 
                     index.searchAsync(aQuery, new CompletionHandler() {
@@ -212,7 +214,6 @@ public class HomeActivity extends AppCompatActivity {
                             }
                         }
                     });
-                    //searchResultsRecycler.setAdapter(new adapterServiceInfo(HomeActivity.this, services));
 
                 } catch (Exception ex) {
                     Toast.makeText(getApplicationContext(), ex.getMessage(), Toast.LENGTH_LONG).show();
