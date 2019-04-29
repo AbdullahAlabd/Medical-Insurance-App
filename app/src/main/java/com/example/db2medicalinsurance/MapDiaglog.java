@@ -43,7 +43,7 @@ public class MapDiaglog extends AppCompatDialogFragment implements OnMapReadyCal
                 .setPositiveButton("Done", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Range = Integer.parseInt(rang_meter.getText().toString());
+                        Range = Math.max(Integer.parseInt(rang_meter.getText().toString()), 1);
                         listener.applyTexts(lat, lon, Range, true);
                     }
                 });

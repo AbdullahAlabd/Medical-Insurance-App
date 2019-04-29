@@ -45,9 +45,9 @@ public class HomeActivity extends FragmentActivity implements MapDiaglog.MapDiag
     private ImageView picView;
     private adapterServiceInfo adapterServiceInfo;
     ///dialog
-    private double lat, lon;
+    private double lat, lng;
     private boolean isDone;
-    private int rang;
+    private int range;
     ///firestore
     private FirebaseFirestore db;
     private CollectionReference serviceRef;
@@ -171,56 +171,45 @@ public class HomeActivity extends FragmentActivity implements MapDiaglog.MapDiag
                         index = client.getIndex("service_ptype");
                     } else if (criteria.equals("Location")) {
                         openDialog();
-                        index = client.getIndex("service_plocation");
                     } else {
                         index = client.getIndex("service_name");
                     }
 
-                    com.algolia.search.saas.Query aQuery;
-                    if(criteria.equals("Location")) {
-                        double lat = 30.1322856, lng = 31.3847951;
-                        aQuery = new com.algolia.search.saas.Query()
-                                .setAroundLatLng(new AbstractQuery.LatLng(lat, lng))
-                                .setAroundRadius(46000)
+                    com.algolia.search.saas.Query aQuery = new com.algolia.search.saas.Query(searchEditText.getText().toString())
                                 .setAttributesToRetrieve("serviceID")
                                 .setHitsPerPage(5);
-                    } else {
-                        aQuery = new com.algolia.search.saas.Query(searchEditText.getText().toString())
-                                .setAttributesToRetrieve("serviceID")
-                                .setHitsPerPage(5);
-                    }
 
-
-                    index.searchAsync(aQuery, new CompletionHandler() {
-                        @Override
-                        public void requestCompleted(JSONObject content, AlgoliaException error) {
-                            services = new ArrayList<>();
-                            try {
-                                JSONArray hits = content.getJSONArray("hits");
-                                for (int i = 0; i < hits.length(); i++) {
-                                    JSONObject jsonObject = hits.getJSONObject(i);
-                                    String service_id = jsonObject.getString("serviceID");
-                                    db.collection("services").document(service_id).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                                        @Override
-                                        public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                            if (documentSnapshot.exists()) {
-                                                services.add(documentSnapshot.toObject(ServiceInfo.class));
-                                                searchResultsRecycler.setAdapter(new adapterServiceInfo(HomeActivity.this, services));
+                    if(!criteria.equals("Location")) {
+                        index.searchAsync(aQuery, new CompletionHandler() {
+                            @Override
+                            public void requestCompleted(JSONObject content, AlgoliaException error) {
+                                services = new ArrayList<>();
+                                try {
+                                    JSONArray hits = content.getJSONArray("hits");
+                                    for (int i = 0; i < hits.length(); i++) {
+                                        JSONObject jsonObject = hits.getJSONObject(i);
+                                        String service_id = jsonObject.getString("serviceID");
+                                        db.collection("services").document(service_id).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                            @Override
+                                            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                                if (documentSnapshot.exists()) {
+                                                    services.add(documentSnapshot.toObject(ServiceInfo.class));
+                                                    searchResultsRecycler.setAdapter(new adapterServiceInfo(HomeActivity.this, services));
+                                                }
                                             }
-                                        }
-                                    });
+                                        });
+                                    }
+                                    if (hits.length() == 0) {
+                                        searchResultsRecycler.setAdapter(new adapterServiceInfo(HomeActivity.this, services));
+                                    }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                } catch (Exception ex) {
+                                    Toast.makeText(getApplicationContext(), ex.getMessage(), Toast.LENGTH_LONG).show();
                                 }
-                                if(hits.length() == 0) {
-                                    searchResultsRecycler.setAdapter(new adapterServiceInfo(HomeActivity.this, services));
-                                }
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            } catch (Exception ex) {
-                                Toast.makeText(getApplicationContext(), ex.getMessage(), Toast.LENGTH_LONG).show();
                             }
-                        }
-                    });
-
+                        });
+                    }
                 } catch (Exception ex) {
                     Toast.makeText(getApplicationContext(), ex.getMessage(), Toast.LENGTH_LONG).show();
                 }
@@ -253,10 +242,48 @@ public class HomeActivity extends FragmentActivity implements MapDiaglog.MapDiag
     @Override
     public void applyTexts(double latitude, double longtitude, int Range, boolean flag) {
         lat = latitude;
-        lon = longtitude;
+        lng = longtitude;
         isDone = flag;
-        rang = Range;
-        Toast.makeText(HomeActivity.this, lat + " " + lon + " " + isDone + " " + rang, Toast.LENGTH_SHORT).show();
+        range = Range;
+        //Toast.makeText(HomeActivity.this, lat + " " + lng + " " + isDone + " " + range, Toast.LENGTH_SHORT).show();
+
+        if(isDone) {
+            index = client.getIndex("service_plocation");
+            com.algolia.search.saas.Query aQuery = new com.algolia.search.saas.Query()
+                    .setAroundLatLng(new AbstractQuery.LatLng(lat, lng))
+                    .setAroundRadius(range)
+                    .setAttributesToRetrieve("serviceID")
+                    .setHitsPerPage(5);
+            index.searchAsync(aQuery, new CompletionHandler() {
+                @Override
+                public void requestCompleted(JSONObject content, AlgoliaException error) {
+                    services = new ArrayList<>();
+                    try {
+                        JSONArray hits = content.getJSONArray("hits");
+                        for (int i = 0; i < hits.length(); i++) {
+                            JSONObject jsonObject = hits.getJSONObject(i);
+                            String service_id = jsonObject.getString("serviceID");
+                            db.collection("services").document(service_id).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                @Override
+                                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                    if (documentSnapshot.exists()) {
+                                        services.add(documentSnapshot.toObject(ServiceInfo.class));
+                                        searchResultsRecycler.setAdapter(new adapterServiceInfo(HomeActivity.this, services));
+                                    }
+                                }
+                            });
+                        }
+                        if (hits.length() == 0) {
+                            searchResultsRecycler.setAdapter(new adapterServiceInfo(HomeActivity.this, services));
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    } catch (Exception ex) {
+                        Toast.makeText(getApplicationContext(), ex.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                }
+            });
+        }
     }
 
 }
