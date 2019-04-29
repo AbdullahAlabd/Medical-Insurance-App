@@ -1,6 +1,6 @@
 package com.example.db2medicalinsurance;
 
-import android.app.AlertDialog;
+import android.support.v7.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
@@ -22,8 +23,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 public class MapDiaglog extends AppCompatDialogFragment implements OnMapReadyCallback {
     private GoogleMap mMap;
     private double lon, lat;
-    Context mcontext;
-    private Fragment fragment;
     private MapDiaglogListener listener;
     private EditText rang_meter;
     int Range;
@@ -80,6 +79,15 @@ public class MapDiaglog extends AppCompatDialogFragment implements OnMapReadyCal
         });
     }
 
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        SupportMapFragment mapFragment = (SupportMapFragment) getFragmentManager().findFragmentById(R.id.map1);
+
+        if (mapFragment != null)
+            getFragmentManager().beginTransaction().remove(mapFragment).commit();
+    }
 
     @Override
     public void onAttach(Context context) {
