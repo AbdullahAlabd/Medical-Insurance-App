@@ -17,6 +17,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
 
@@ -31,7 +32,6 @@ public class updateHospitalData extends AppCompatActivity {
     ImageButton img;
     ImageView imgview;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private CollectionReference serviceRef = db.collection("providers");
 
     private static int RESULT_LOAD_IMAGE = 1;
 
@@ -70,7 +70,7 @@ public class updateHospitalData extends AppCompatActivity {
                 city = findViewById(R.id.hospital_city);
                 country = findViewById(R.id.hospital_country);
                 street = findViewById(R.id.hospital_street);
-                id = findViewById(R.id.hid);
+                id = findViewById(R.id.hospital_id);
                 String ownerS = owner.getText().toString();
                 String nameS = name.getText().toString();
                 String typeS = type.getText().toString();
@@ -112,8 +112,9 @@ public class updateHospitalData extends AppCompatActivity {
                 GeoPoint locationS = new GeoPoint(Double.parseDouble(latitude) , Double.parseDouble(longitude));
 
                 ProviderInfo p = new ProviderInfo(address , nameS , typeS , ownerS , phoneS , locationS);
+                DocumentReference serviceRef = db.collection("providers").document(ids);
 
-                serviceRef.add(p);
+                serviceRef.set(p);
 
                 Intent i = new Intent(updateHospitalData.this, admin.class);
                 startActivity(i);

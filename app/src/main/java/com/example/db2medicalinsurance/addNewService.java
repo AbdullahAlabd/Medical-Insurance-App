@@ -16,6 +16,7 @@ import android.widget.ImageView;
 
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Date;
@@ -114,9 +115,10 @@ public class addNewService extends AppCompatActivity {
                 Date startS1 = new Date(startS);
                 Date endS1 = new Date(endS);
 
-                ServiceInfo s = new ServiceInfo(startS1, endS1, p.getType(), p.getLocation(), descriptionS, nameS, p.getName());
-                serviceRef.add(s);
+                ServiceInfo s = new ServiceInfo(startS1, endS1, p.getType(), p.getLocation(), descriptionS, nameS, p.getName() , pidS);
+                DocumentReference serviceRef = db.collection("services").document(pidS);
 
+                serviceRef.set(s);
                 Intent i = new Intent(addNewService.this, admin.class);
                 startActivity(i);
             }

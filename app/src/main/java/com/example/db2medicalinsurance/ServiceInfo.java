@@ -27,7 +27,7 @@ public class ServiceInfo {
 
 
 
-    public ServiceInfo(Date start_time, Date end_time, String provider_type, GeoPoint provider_location, String description, String name, String provider_name) {
+    public ServiceInfo(Date start_time, Date end_time, String provider_type, GeoPoint provider_location, String description, String name, String provider_name , String provider_id) {
         this.start_time = start_time;
         this.end_time = end_time;
         this.provider_type = provider_type;
