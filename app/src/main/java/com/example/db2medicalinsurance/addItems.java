@@ -31,7 +31,7 @@ import java.util.Locale;
 import java.util.Map;
 
 public class addItems extends AppCompatActivity {
-    EditText desc, name, discount, end, price, start, id;
+    EditText desc, name, discount, end, price, start, id,provid;
     Button add;
     EditText edittext;
     Calendar myCalendar;
@@ -117,6 +117,7 @@ public class addItems extends AppCompatActivity {
                 discount = findViewById(R.id.discount);
                 price = findViewById(R.id.price);
                 id = findViewById(R.id.id);
+                provid = findViewById(R.id.provid);
 
                 String descS = desc.getText().toString();
                 String nameS = name.getText().toString();
@@ -125,6 +126,7 @@ public class addItems extends AppCompatActivity {
                 String priceS = price.getText().toString();
                 String startS = start.getText().toString();
                 String idS = id.getText().toString();
+                String providS = provid.getText().toString();
 
                 String UNIX_DATE_FORMAT = "dd/MM/yyyy";
                 SimpleDateFormat formatter = new SimpleDateFormat(UNIX_DATE_FORMAT);
