@@ -1,5 +1,6 @@
 package com.example.db2medicalinsurance;
 
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.location.Address;
@@ -10,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -19,12 +21,18 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class addNewService extends AppCompatActivity {
     EditText name, description, start, end;
     EditText pname, paddress, pid, ptype;
+    Calendar myCalendar;
+    DatePickerDialog.OnDateSetListener date;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private CollectionReference serviceRef = db.collection("services");
 
@@ -59,14 +67,75 @@ public class addNewService extends AppCompatActivity {
             }
         });
 
+        myCalendar = Calendar.getInstance();
+
+        end = findViewById(R.id.service_endtime);
+        start = findViewById(R.id.service_starttime);
+        start.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                // TODO Auto-generated method stub
+                new DatePickerDialog(addNewService.this, date, myCalendar
+                        .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
+                        myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+                date = new DatePickerDialog.OnDateSetListener() {
+
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int monthOfYear,
+                                          int dayOfMonth) {
+                        // TODO Auto-generated method stub
+                        myCalendar.set(Calendar.YEAR, year);
+                        myCalendar.set(Calendar.MONTH, monthOfYear);
+                        myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                        String myFormat = "dd/MM/yy"; //In which you need put here
+                        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+
+                        start.setText(sdf.format(myCalendar.getTime()));
+                        //end.setText(sdf.format(myCalendar.getTime()));
+                    }
+
+                };
 
 
+            }
+
+
+        });
+        end.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                // TODO Auto-generated method stub
+                new DatePickerDialog(addNewService.this, date, myCalendar
+                        .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
+                        myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+                date = new DatePickerDialog.OnDateSetListener() {
+
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int monthOfYear,
+                                          int dayOfMonth) {
+                        // TODO Auto-generated method stub
+                        myCalendar.set(Calendar.YEAR, year);
+                        myCalendar.set(Calendar.MONTH, monthOfYear);
+                        myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                        String myFormat = "dd/MM/yy"; //In which you need put here
+                        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+
+                        // start.setText(sdf.format(myCalendar.getTime()));
+                        end.setText(sdf.format(myCalendar.getTime()));
+                    }
+
+                };
+            }
+
+
+        });
         add.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 description = findViewById(R.id.service_description);
                 name = findViewById(R.id.service_name);
-                end = findViewById(R.id.service_endtime);
-                start = findViewById(R.id.service_starttime);
+
 
 
                 String descriptionS = description.getText().toString();
@@ -108,17 +177,34 @@ public class addNewService extends AppCompatActivity {
                     e.printStackTrace();
                 }
                 System.out.println(descriptionS + nameS + startS + endS);
+                /********************************************************************************************************************/
+                String UNIX_DATE_FORMAT = "dd/MM/yyyy";
+                SimpleDateFormat formatter = new SimpleDateFormat(UNIX_DATE_FORMAT);
+                Date start_date = null;
+                Date end_date = null;
+
+                try {
+                    start_date = (Date)formatter.parse(startS);
+                    end_date = (Date)formatter.parse(endS);
+
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                System.out.println(start_date.getDate()+"////////"+end_date.getTime());
+                /********************************************************************************************************************/
+
+
                 /***************************************
                  ***************Firebase Code************
                  ****************************************/
                 ProviderInfo p = new ProviderInfo();
-                Date startS1 = new Date(startS);
-                Date endS1 = new Date(endS);
+                //Date startS1 = new Date(startS);
+                //Date endS1 = new Date(endS);
 
-                ServiceInfo s = new ServiceInfo(startS1, endS1, p.getType(), p.getLocation(), descriptionS, nameS, p.getName() , pidS);
-                DocumentReference serviceRef = db.collection("services").document(pidS);
+                //ServiceInfo s = new ServiceInfo(startS1, endS1, p.getType(), p.getLocation(), descriptionS, nameS, p.getName() , pidS);
+                //DocumentReference serviceRef = db.collection("services").document(pidS);
 
-                serviceRef.set(s);
+                //serviceRef.set(s);
                 Intent i = new Intent(addNewService.this, admin.class);
                 startActivity(i);
             }
