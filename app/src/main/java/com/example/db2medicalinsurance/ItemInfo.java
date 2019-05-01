@@ -9,6 +9,9 @@ public class ItemInfo {
     private Double discount;
     private Date start_time;
     private Date end_time;
+    private String provider_id;
+    private String service_id;
+
     public ItemInfo() {}
 
 
@@ -16,13 +19,15 @@ public class ItemInfo {
         return start_time;
     }
 
-    public ItemInfo(String description, String name, Double price, Double discount, Date start_time, Date end_time) {
+    public ItemInfo(String description, String name, Double price, Double discount, Date start_time, Date end_time , String provider_id , String service_id) {
         this.description = description;
         this.name = name;
         this.price = price;
         this.discount = discount;
         this.start_time = start_time;
         this.end_time = end_time;
+        this.provider_id = provider_id;
+        this.service_id = service_id;
     }
 
     public void setStart_time(Date start_time) {

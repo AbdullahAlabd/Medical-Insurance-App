@@ -17,6 +17,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TimePicker;
 
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
@@ -150,10 +151,10 @@ public class addItems extends AppCompatActivity {
                 //Date endS1 = new Date(endS);
                 Double priceS1 = Double.parseDouble(priceS);
                 Double discountS1 = Double.parseDouble(discountS);
-                //ItemInfo S = new ItemInfo(descS, nameS, priceS1, discountS1);
-                //DocumentReference serviceRef = db.collection("services").document("Jwe98DwLFM1PIN42lUL3").collection("items").document(idS);
+                ItemInfo S = new ItemInfo(descS, nameS, priceS1, discountS1 , start_date , end_date , providS , idS);
+                CollectionReference serviceRef = db.collection("services").document(idS).collection("items");
 
-                //serviceRef.set(S);
+                serviceRef.add(S);
 
                 Intent i = new Intent(addItems.this, admin.class);
                 startActivity(i);

@@ -20,6 +20,7 @@ import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.GeoPoint;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -190,21 +191,23 @@ public class addNewService extends AppCompatActivity {
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
-                System.out.println(start_date.getDate()+"////////"+end_date.getTime());
+//                System.out.println(start_date.getDate()+"////////"+end_date.getTime());
                 /********************************************************************************************************************/
 
 
                 /***************************************
                  ***************Firebase Code************
                  ****************************************/
+                //GeoPoint locationS = new GeoPoint(Double.parseDouble(latitude) , Double.parseDouble(longitude));
+
                 ProviderInfo p = new ProviderInfo();
                 //Date startS1 = new Date(startS);
                 //Date endS1 = new Date(endS);
 
-                //ServiceInfo s = new ServiceInfo(startS1, endS1, p.getType(), p.getLocation(), descriptionS, nameS, p.getName() , pidS);
-                //DocumentReference serviceRef = db.collection("services").document(pidS);
+                ServiceInfo s = new ServiceInfo(start_date, end_date , ptypeS, p.getLocation(), descriptionS, nameS, pnameS , pidS);
+                DocumentReference serviceRef = db.collection("services").document(pidS);
 
-                //serviceRef.set(s);
+                serviceRef.set(s);
                 Intent i = new Intent(addNewService.this, admin.class);
                 startActivity(i);
             }
