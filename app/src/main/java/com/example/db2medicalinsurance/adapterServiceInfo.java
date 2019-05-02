@@ -51,7 +51,7 @@ public class adapterServiceInfo extends RecyclerView.Adapter<adapterServiceInfo.
 
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageRef = storage.getReference();
-        StorageReference imageReference = storageRef.child("images/myOwl.png");
+        StorageReference imageReference = storageRef.child("images/"+Provider_Id+".jpg");
 
         imageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override

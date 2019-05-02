@@ -2,6 +2,7 @@ package com.example.db2medicalinsurance;
 
 import android.content.Intent;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
@@ -9,12 +10,14 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.db2medicalinsurance.MainActivity;
 import com.example.db2medicalinsurance.ServiceDetailActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
@@ -33,6 +36,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.StorageReference;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,6 +53,7 @@ public class ProviderInfoActivity extends FragmentActivity implements OnMapReady
     private Location location;
     private DocumentReference ProviderRef;
     private FirebaseStorage firebaseStorage;
+    private ImageView HosPital_Logo;
     private FirebaseFirestore firestoreDB;
     private CollectionReference collectionReference;
     private GoogleMap mMap;
@@ -68,6 +74,7 @@ public class ProviderInfoActivity extends FragmentActivity implements OnMapReady
         mProvider_Name = findViewById(R.id.mProvider_Name);
         mSpecialization = findViewById(R.id.mSpecialization);
         mOwner = findViewById(R.id.mOwner);
+        HosPital_Logo = findViewById(R.id.mHosPital_Logo);
         mPhone_Number = findViewById(R.id.mPhone_Number);
         mCountry = findViewById(R.id.mCountry);
         mCity = findViewById(R.id.mCity);
@@ -80,11 +87,32 @@ public class ProviderInfoActivity extends FragmentActivity implements OnMapReady
         recycler_view.setLayoutManager(new LinearLayoutManager(this));
 
         load_informatio_provider(Provider_Id);
+
         load_service_provider();
 
     }
 
     public void load_informatio_provider(String Id) {
+
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageRef = storage.getReference();
+        StorageReference imageReference = storageRef.child("images/"+Provider_Id+".jpg");
+
+        imageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                System.out.println(uri.toString());
+                Picasso.get()
+                        .load(uri.toString())
+                        .into(HosPital_Logo);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+            }
+        });
+
+
         ProviderRef = db.collection("providers").document(Id);
         ProviderRef.get()
                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -118,11 +146,12 @@ public class ProviderInfoActivity extends FragmentActivity implements OnMapReady
 
                     }
                 });
+
     }
 
     public void load_service_provider() {
         collectionReference = db.collection("services");
-        collectionReference.whereEqualTo("provider_id" , "1RvrRsxVzYg6XFadEiLo")
+        collectionReference.whereEqualTo("provider_id" , Provider_Id)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -149,14 +178,20 @@ public class ProviderInfoActivity extends FragmentActivity implements OnMapReady
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+
         LatLng position = new LatLng(lat, lon);
+
         MarkerOptions options = new MarkerOptions();
 
         options.position(position);
+
         options.title("amr");
+
         mMap.addMarker(options);
-        //mMap.animateCamera(CameraUpdateFactory.zoomBy(4.0f));
+
         CameraUpdate updatePosition = CameraUpdateFactory.newLatLngZoom(position, (float)17);
+
         mMap.moveCamera(updatePosition);
     }
+
 }
